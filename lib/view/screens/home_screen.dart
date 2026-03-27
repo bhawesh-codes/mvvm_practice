@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mvvm_practice/view/screens/login_screen.dart';
 import 'package:mvvm_practice/viewmodel/home_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -26,12 +27,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Thuprai"),
+        elevation: 5,
+        backgroundColor: Colors.blueAccent,
+        title: Text(
+          "Thuprai",
+          style: GoogleFonts.notoSans(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16),
             child: IconButton(
-              icon: Icon(Icons.exit_to_app),
+              icon: Icon(Icons.exit_to_app, color: Colors.white),
               onPressed: () {
                 vm.logout();
                 Navigator.pushReplacement(
