@@ -4,20 +4,17 @@ import 'package:mvvm_practice/view/screens/home_screen.dart';
 import 'package:mvvm_practice/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
-  
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,28 +81,63 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
-                                   await lv.login(emailController.text, passwordController.text);
+                                    // Capture BEFORE the async gap
+                                    final navigator = Navigator.of(context);
+                                    final messenger = ScaffoldMessenger.of(
+                                      context,
+                                    );
 
-                                  }
-                                  if(lv.token!=null){
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("Login successful!")),
+                                    await lv.login(
+                                      emailController.text,
+                                      passwordController.text,
                                     );
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
-                                  } else if (lv.error != null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("Check your credentials!")),
-                                    );
+
+                                    if (lv.token != null) {
+                                      messenger.showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.green,
+                                          duration: Duration(milliseconds: 500),
+                                          content: Text(
+                                            "Login successful!",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                      navigator.pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (_) => HomeScreen(),
+                                        ),
+                                      );
+                                    } else if (lv.error != null) {
+                                      messenger.showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.red,
+                                          content: Text(
+                                            "Check your credentials!",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.all(8),
                                   backgroundColor: Colors.blue,
                                   minimumSize: Size(200, 50),
                                 ),
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                child: lv.isLoading
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : Text(
+                                        'Login',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                               ),
                             ),
                           ],
