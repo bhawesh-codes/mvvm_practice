@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: EdgeInsets.only(right: 16),
             child: IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 vm.logout();
                 Navigator.pushReplacement(
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   itemBuilder: (context, index) {
                     final book = books[index];
-                
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -103,28 +103,79 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
 
-                Center(
-                  child: Row(
-                    mainAxisAlignment: .center,
-                    children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          context.read<HomeViewModel>().previousPage();
-                        },
-                        label: Text("Previous Page"),
-                        icon: Icon(Icons.arrow_back),
+                // Center(
+                //   child: Row(
+                //     mainAxisAlignment: .center,
+                //     children: [
+                //       TextButton.icon(
+                //         onPressed: () {
+                //           context.read<HomeViewModel>().previousPage();
+                //         },
+                //         label: Text("Previous Page"),
+                //         icon: Icon(Icons.arrow_back),
+                //       ),
+                //       SizedBox(width: 8),
+                //       TextButton.icon(
+                //         onPressed: () {
+                //           context.read<HomeViewModel>().nextPage();
+                //         },
+                //         label: Text("Next Page"),
+                //         icon: Icon(Icons.arrow_forward),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                SizedBox(height: 12),
+                Divider(),
+                SizedBox(height: 12),
+                Row(
+                  mainAxisSize: .min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeViewModel>().previousPage();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.arrow_back,
+                            size: 18,
+                            color: Colors.blueAccent,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            "Previous Page",
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8),
-                      TextButton.icon(
-                        onPressed: () {
-                          context.read<HomeViewModel>().nextPage();
-                        },
-                        label: Text("Next Page"),
-                        icon: Icon(Icons.arrow_forward),
+                    ),
+                    SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeViewModel>().nextPage();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Next Page",
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                          SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward,
+                            size: 18,
+                            color: Colors.blueAccent,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                SizedBox(height: 16),
               ],
             ),
           );
