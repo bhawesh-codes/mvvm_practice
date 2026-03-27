@@ -16,13 +16,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
-        ChangeNotifierProvider(create: (_)=> HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: LoginScreen(),
-        ),
+        home: Scaffold(body: LoginScreen()),
       ),
     );
   }
