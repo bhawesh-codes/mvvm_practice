@@ -27,23 +27,27 @@ class HomeViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-  void logout(){
+
+  void logout() {
     _storage.deleteToken();
     bookData = null;
-    _apiService.page= 1;
-    notifyListeners();
-    
-  }
-  void nextPage(){
-    _apiService.page++;
-    fetchBooks();
+    _apiService.page = 1;
     notifyListeners();
   }
+
+  void nextPage() {
+    if (_apiService.page < 6) {
+      _apiService.page++;
+      fetchBooks();
+      notifyListeners();
+    }
+  }
+
   void previousPage() {
-    if(_apiService.page > 1){
-    _apiService.page--;
-    fetchBooks();
-    notifyListeners();
+    if (_apiService.page > 1) {
+      _apiService.page--;
+      fetchBooks();
+      notifyListeners();
     }
   }
 }
