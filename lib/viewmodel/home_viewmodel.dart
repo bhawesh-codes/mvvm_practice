@@ -5,6 +5,7 @@ import 'package:mvvm_practice/data/services/secure_storage_service.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
+  ApiService get apiService => _apiService;
   final SecureStorageService _storage = SecureStorageService();
 
   BookModel? bookData;
