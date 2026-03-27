@@ -56,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Builder(
         builder: (_) {
           if (vm.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: Colors.blueAccent),
+            );
           }
 
           if (vm.error != null) {
@@ -165,26 +167,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                     SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<HomeViewModel>().nextPage();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Next Page",
-                            style: TextStyle(color: Colors.blueAccent),
+                    context.watch<HomeViewModel>().apiService.page == 5
+                        ? SizedBox()
+                        : GestureDetector(
+                            onTap: () {
+                              context.read<HomeViewModel>().nextPage();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Next Page",
+                                  style: TextStyle(color: Colors.blueAccent),
+                                ),
+                                SizedBox(width: 4),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  size: 18,
+                                  color: Colors.blueAccent,
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(width: 4),
-                          Icon(
-                            Icons.arrow_forward,
-                            size: 18,
-                            color: Colors.blueAccent,
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
 
