@@ -142,26 +142,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: .min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        context.read<HomeViewModel>().previousPage();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.arrow_back,
-                            size: 18,
-                            color: Colors.blueAccent,
+                    context.watch<HomeViewModel>().apiService.page == 1
+                        ? SizedBox()
+                        : GestureDetector(
+                            onTap: () {
+                              context.read<HomeViewModel>().previousPage();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.arrow_back,
+                                  size: 18,
+                                  color: Colors.blueAccent,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  "Previous Page",
+                                  style: TextStyle(color: Colors.blueAccent),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(width: 4),
-                          Text(
-                            "Previous Page",
-                            style: TextStyle(color: Colors.blueAccent),
-                          ),
-                        ],
-                      ),
-                    ),
                     SizedBox(width: 16),
                     GestureDetector(
                       onTap: () {
@@ -185,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+
                 SizedBox(height: 16),
               ],
             ),
