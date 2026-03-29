@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mvvm_practice/data/services/secure_storage_service.dart';
+import 'package:mvvm_practice/services/secure_storage_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
   bool isLoading = false;

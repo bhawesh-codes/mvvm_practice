@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mvvm_practice/data/models/book_model.dart';
-import 'package:mvvm_practice/data/services/secure_storage_service.dart';
+import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/services/secure_storage_service.dart';
 
 class ApiService {
   final SecureStorageService storage = SecureStorageService();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_practice/data/models/book_model.dart';
-import 'package:mvvm_practice/data/services/api_services.dart';
-import 'package:mvvm_practice/data/services/secure_storage_service.dart';
+import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/services/api_services.dart';
+import 'package:mvvm_practice/services/secure_storage_service.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();

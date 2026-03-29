@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mvvm_practice/view/screens/login_screen.dart';
-import 'package:mvvm_practice/viewmodel/home_viewmodel.dart';
+import 'package:mvvm_practice/view/login/login_view.dart';
+import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {

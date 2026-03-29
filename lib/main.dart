@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_practice/view/screens/splash_screen.dart';
-import 'package:mvvm_practice/viewmodel/home_viewmodel.dart';
-import 'package:mvvm_practice/viewmodel/login_viewmodel.dart';
+import 'package:mvvm_practice/view/splash/splash_view.dart';
+import 'package:mvvm_practice/view/home/home_viewmodel.dart';
+import 'package:mvvm_practice/view/login/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 void main() {
