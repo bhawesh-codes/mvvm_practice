@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/splash/splash_view.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:mvvm_practice/view/login/login_viewmodel.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => FavoriteViewmodel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
