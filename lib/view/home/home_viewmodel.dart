@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
 import 'package:mvvm_practice/services/api_services.dart';
 import 'package:mvvm_practice/services/secure_storage_service.dart';
+import 'package:mvvm_practice/view/home/models/book_model.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -10,59 +10,46 @@ class HomeViewModel extends ChangeNotifier {
 
   BookModel? bookData;
   bool isLoading = false;
+  bool hasFetched = false; // ✅ add this
   String? error;
-  List<Result> favoritebooks = [];
 
   Future<void> fetchBooks() async {
+    if (isLoading) return;
     isLoading = true;
+    hasFetched = true; // ✅ mark as fetched
     error = null;
     notifyListeners();
-
     try {
       final data = await _apiService.fetchBooks();
       bookData = data;
     } catch (e) {
       error = e.toString();
     }
-
     isLoading = false;
-    notifyListeners();
-  }
-
-  void logout() {
-    _storage.deleteToken();
-    bookData = null;
-    _apiService.page = 1;
     notifyListeners();
   }
 
   void nextPage() {
     if (_apiService.page < 6) {
       _apiService.page++;
+      hasFetched = false; // ✅ reset so fetchBooks runs again
       fetchBooks();
-      notifyListeners();
     }
   }
 
   void previousPage() {
     if (_apiService.page > 1) {
       _apiService.page--;
+      hasFetched = false; // ✅ reset so fetchBooks runs again
       fetchBooks();
-      notifyListeners();
     }
   }
 
-  void toggleFavorite(Result book) {
-    if (favoritebooks.contains(book)) {
-      favoritebooks.remove(book);
-    } else {
-      favoritebooks.add(book);
-    }
-
+  void logout() {
+    _storage.deleteToken();
+    bookData = null;
+    hasFetched = false; // ✅ reset on logout
+    _apiService.page = 1;
     notifyListeners();
-  }
-
-  bool isFavorite(Result book) {
-    return favoritebooks.contains(book);
   }
 }
