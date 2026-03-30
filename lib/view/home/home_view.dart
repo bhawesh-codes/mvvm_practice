@@ -1,35 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/utils/const/my_appbar.dart';
+import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeViewModel>().fetchBooks();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Replaces initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final vm = context.read<HomeViewModel>();
+      if (!vm.hasFetched) {
+        // ✅ only fetch if not already fetched
+        vm.fetchBooks();
+      }
+    });
+
     final vm = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: MyAppbar(),
       body: Builder(
         builder: (_) {
-          if (vm.isLoading) {
-            return Center(
+          if (context.read<HomeViewModel>().isLoading) {
+            return const Center(
               child: CircularProgressIndicator(color: Colors.blueAccent),
             );
           }
@@ -39,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (vm.bookData == null) {
-            return Center(child: Text("No data"));
+            return const Center(child: Text("No data"));
           }
 
           final books = vm.bookData!.results ?? [];
@@ -50,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 GridView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: books.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 12,
@@ -80,120 +76,94 @@ class _HomeScreenState extends State<HomeScreen> {
                                   : Container(color: Colors.grey),
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
                                   book.title ?? "No title",
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               IconButton(
                                 onPressed: () {
-                                  context.read<HomeViewModel>().toggleFavorite(
+                                  context.read<FavoriteViewmodel>().toggleFavorite(
                                     book,
                                   );
                                 },
-                                icon: vm.isFavorite(book)
-                                    ? Icon(
+                                icon: context.watch<FavoriteViewmodel>().isFavorite(book)
+                                    ? const Icon(
                                         Icons.favorite,
                                         color: Colors.red,
                                         size: 20,
                                       )
-                                    : Icon(Icons.favorite_border, size: 20),
+                                    : const Icon(
+                                        Icons.favorite_border,
+                                        size: 20,
+                                      ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                         ],
                       ),
                     );
                   },
                 ),
-
-                // Center(
-                //   child: Row(
-                //     mainAxisAlignment: .center,
-                //     children: [
-                //       TextButton.icon(
-                //         onPressed: () {
-                //           context.read<HomeViewModel>().previousPage();
-                //         },
-                //         label: Text("Previous Page"),
-                //         icon: Icon(Icons.arrow_back),
-                //       ),
-                //       SizedBox(width: 8),
-                //       TextButton.icon(
-                //         onPressed: () {
-                //           context.read<HomeViewModel>().nextPage();
-                //         },
-                //         label: Text("Next Page"),
-                //         icon: Icon(Icons.arrow_forward),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                SizedBox(height: 12),
-                Divider(),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 12),
                 Row(
-                  mainAxisSize: .min,
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    context.watch<HomeViewModel>().apiService.page == 1
-                        ? SizedBox()
-                        : GestureDetector(
-                            onTap: () {
-                              context.read<HomeViewModel>().previousPage();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.arrow_back,
-                                  size: 18,
-                                  color: Colors.blueAccent,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  "Previous Page",
-                                  style: TextStyle(color: Colors.blueAccent),
-                                ),
-                              ],
+                    if (vm.apiService.page != 1)
+                      GestureDetector(
+                        onTap: () =>
+                            context.read<HomeViewModel>().previousPage(),
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_back,
+                              size: 18,
+                              color: Colors.blueAccent,
                             ),
-                          ),
-                    SizedBox(width: 16),
-                    context.watch<HomeViewModel>().apiService.page == 5
-                        ? SizedBox()
-                        : GestureDetector(
-                            onTap: () {
-                              context.read<HomeViewModel>().nextPage();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Next Page",
-                                  style: TextStyle(color: Colors.blueAccent),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 18,
-                                  color: Colors.blueAccent,
-                                ),
-                              ],
+                            SizedBox(width: 4),
+                            Text(
+                              "Previous Page",
+                              style: TextStyle(color: Colors.blueAccent),
                             ),
-                          ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(width: 16),
+                    if (vm.apiService.page != 5)
+                      GestureDetector(
+                        onTap: () => context.read<HomeViewModel>().nextPage(),
+                        child: const Row(
+                          children: [
+                            Text(
+                              "Next Page",
+                              style: TextStyle(color: Colors.blueAccent),
+                            ),
+                            SizedBox(width: 4),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 18,
+                              color: Colors.blueAccent,
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
-
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
             ),
           );
