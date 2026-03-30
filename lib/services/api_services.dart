@@ -1,39 +1,32 @@
-
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mvvm_practice/services/dio_client.dart';
 import 'package:mvvm_practice/view/home/models/book_model.dart';
-import 'package:mvvm_practice/services/secure_storage_service.dart';
 
 class ApiService {
-  final SecureStorageService storage = SecureStorageService();
-  
+  final Dio _dio = DioClient().dio; // ✅ use dio client with interceptor
   int page = 1;
-  Future<BookModel?> fetchBooks() async {
-    final String? token = await storage.getToken();
-    try {
-      final response = await http.get(
-        Uri.parse('https://tbe.thuprai.com/v1/books/new-releases/?page=$page'), 
-        headers: {'Authorization': 'Token $token'},
-      );
 
-      if (response.statusCode == 200) {
-        final bookModel = bookModelFromJson(response.body);
-        return bookModel;
-      } else {
-        debugPrint("Error: ${response.statusCode}");
-        return null;
-      }
-    } catch (e) {
-      debugPrint("Exception: $e");
-      return null;
+  Future<BookModel?> fetchBooks() async {
+    try {
+      final response = await _dio.get(
+        '/books/new-releases/',
+        queryParameters: {'page': page}, // ✅ cleaner than string interpolation
+      );
+      return BookModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Failed to fetch books");
     }
-  } 
   }
 
-
-  
-    
-
-  
-
+  Future<String> login(String username, String password) async {
+    try {
+      final response = await _dio.post(
+        '/api/login/',
+        data: {"username": username, "password": password},
+      );
+      return response.data['token'];
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Check your credentials");
+    }
+  }
+}
