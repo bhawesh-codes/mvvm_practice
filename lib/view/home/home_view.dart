@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mvvm_practice/utils/const/my_appbar.dart';
-import 'package:mvvm_practice/view/login/login_view.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
