@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/splash/splash_view.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
-import 'package:mvvm_practice/view/login/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => FavoriteViewmodel()),
       ],
