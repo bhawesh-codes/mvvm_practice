@@ -1,50 +1,45 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:mvvm_practice/services/api_services.dart';
 import 'package:mvvm_practice/services/secure_storage_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   bool isLoading = false;
-  String? token;
   String? error;
 
+  final ApiService _apiService = ApiService();
   final SecureStorageService _storage = SecureStorageService();
 
-  Future<void> login(String username, String password) async {
+  Future<bool> login() async {
+    if (!formKey.currentState!.validate()) return false;
+
     isLoading = true;
     error = null;
     notifyListeners();
 
     try {
-      final response = await http.post(
-        Uri.parse('https://tbe.thuprai.com/v1/api/login/'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "username": username,
-          "password": password,
-        }),
+      final token = await _apiService.login(
+        emailController.text,
+        passwordController.text,
       );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        token = data['token'];
-        
-
-        
-        await _storage.saveToken(token!);
-
-      } else {
-        error = "Check your credentials";
-      }
+      await _storage.saveToken(token);
+      return true;
     } catch (e) {
       error = e.toString();
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
+  }
 
-    isLoading = false;
-    notifyListeners();
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
