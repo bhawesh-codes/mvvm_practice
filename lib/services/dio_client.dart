@@ -3,11 +3,13 @@ import 'package:mvvm_practice/services/secure_storage_service.dart';
 import 'package:mvvm_practice/utils/const/api_url.dart';
 
 class DioClient {
-  final SecureStorageService _storage = SecureStorageService();
+  static final DioClient _instance = DioClient._internal();
+  factory DioClient() => _instance;
 
   late final Dio dio;
+  final SecureStorageService _storage = SecureStorageService();
 
-  DioClient() {
+  DioClient._internal() {
     dio = Dio(
       BaseOptions(
         baseUrl: ApiUrl.baseUrl,
@@ -19,27 +21,21 @@ class DioClient {
 
     dio.interceptors.add(
       InterceptorsWrapper(
-        // runs before every request
         onRequest: (options, handler) async {
           final token = await _storage.getToken();
           if (token != null) {
-            options.headers['Authorization'] =
-                'Token $token'; // ✅ auto attach token
+            options.headers['Authorization'] = 'Token $token';
           }
-          return handler.next(options); // continue request
+          return handler.next(options);
         },
-
-        // runs on every successful response
         onResponse: (response, handler) {
-          return handler.next(response); // continue normally
+          return handler.next(response);
         },
-
-        // runs on every error
         onError: (DioException e, handler) {
           if (e.response?.statusCode == 401) {
-            // token expired — you could logout user here
+            // handle token expiry — logout user
           }
-          return handler.next(e); // continue error
+          return handler.next(e);
         },
       ),
     );
