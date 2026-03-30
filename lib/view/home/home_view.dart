@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mvvm_practice/utils/const/my_appbar.dart';
 import 'package:mvvm_practice/view/login/login_view.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -26,33 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final vm = context.watch<HomeViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 5,
-        backgroundColor: Colors.blueAccent,
-        title: Text(
-          "Thuprai",
-          style: GoogleFonts.notoSans(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: IconButton(
-              icon: Icon(Icons.exit_to_app, color: Colors.white),
-              onPressed: () {
-                vm.logout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+      appBar: MyAppbar(),
       body: Builder(
         builder: (_) {
           if (vm.isLoading) {
@@ -72,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final books = vm.bookData!.results ?? [];
 
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12),
             child: ListView(
               children: [
                 GridView.builder(
@@ -81,36 +56,64 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: books.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 12,
                     childAspectRatio: 0.6,
                   ),
                   itemBuilder: (context, index) {
                     final book = books[index];
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(border: Border.all()),
-                            child: book.frontCover != null
-                                ? Image.network(
-                                    book.frontCover!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  )
-                                : Container(color: Colors.grey),
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(border: Border.all()),
+                              child: book.frontCover != null
+                                  ? Image.network(
+                                      book.frontCover!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    )
+                                  : Container(color: Colors.grey),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          book.title ?? "No title",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                          SizedBox(height: 6),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  book.title ?? "No title",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  context.read<HomeViewModel>().toggleFavorite(
+                                    book,
+                                  );
+                                },
+                                icon: vm.isFavorite(book)
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 20,
+                                      )
+                                    : Icon(Icons.favorite_border, size: 20),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6),
+                        ],
+                      ),
                     );
                   },
                 ),
