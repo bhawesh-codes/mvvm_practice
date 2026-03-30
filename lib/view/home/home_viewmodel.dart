@@ -11,6 +11,7 @@ class HomeViewModel extends ChangeNotifier {
   BookModel? bookData;
   bool isLoading = false;
   String? error;
+  List<Result> favoritebooks = [];
 
   Future<void> fetchBooks() async {
     isLoading = true;
@@ -49,5 +50,19 @@ class HomeViewModel extends ChangeNotifier {
       fetchBooks();
       notifyListeners();
     }
+  }
+
+  void toggleFavorite(Result book) {
+    if (favoritebooks.contains(book)) {
+      favoritebooks.remove(book);
+    } else {
+      favoritebooks.add(book);
+    }
+
+    notifyListeners();
+  }
+
+  bool isFavorite(Result book) {
+    return favoritebooks.contains(book);
   }
 }
