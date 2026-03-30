@@ -15,101 +15,132 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Login',
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              const Text('Hi, welcome back! Please login to your account.'),
-              const SizedBox(height: 30),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Login',
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                const Text('Hi, welcome back! Please login to your account.'),
+                const SizedBox(height: 30),
 
-              SizedBox(
-                height: 340,
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 16, 8, 24),
-                    child: Form(
-                      key: vm.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Email'),
-                          const SizedBox(height: 5),
+                SizedBox(
+                  height: 360,
+                  width: double.infinity,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 16, 12, 24),
+                      child: Form(
+                        key: vm.formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Email'),
+                            const SizedBox(height: 5),
 
-                          TextFormField(
-                            controller: vm.emailController,
-                            validator: Validators.emailValidator,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-
-                          const SizedBox(height: 24),
-                          const Text('Password'),
-                          const SizedBox(height: 5),
-
-                          TextFormField(
-                            controller: vm.passwordController,
-                            validator: Validators.passwordValidator,
-                            obscureText: true,
-                          ),
-
-                          const SizedBox(height: 30),
-
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: vm.isLoading
-                                  ? null
-                                  : () async {
-                                      final navigator = Navigator.of(context);
-                                      final messenger = ScaffoldMessenger.of(
-                                        context,
-                                      );
-
-                                      final success = await vm.login();
-
-                                      if (success) {
-                                        messenger.showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.green,
-                                            content: Text("Login successful!"),
-                                          ),
-                                        );
-
-                                        navigator.pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (_) => const HomeScreen(),
-                                          ),
-                                        );
-                                      } else {
-                                        messenger.showSnackBar(
-                                          SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text(
-                                              vm.error ??
-                                                  "Something went wrong",
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                              child: vm.isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : const Text('Login'),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Enter your email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              controller: vm.emailController,
+                              validator: Validators.emailValidator,
+                              keyboardType: TextInputType.emailAddress,
                             ),
-                          ),
-                        ],
+
+                            const SizedBox(height: 24),
+                            const Text('Password'),
+                            const SizedBox(height: 5),
+
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Enter your password',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              controller: vm.passwordController,
+                              validator: Validators.passwordValidator,
+                              obscureText: true,
+                            ),
+
+                            const SizedBox(height: 30),
+
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: vm.isLoading
+                                    ? null
+                                    : () async {
+                                        final navigator = Navigator.of(context);
+                                        final messenger = ScaffoldMessenger.of(
+                                          context,
+                                        );
+
+                                        final success = await vm.login();
+
+                                        if (success) {
+                                          messenger.showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                "Login successful!",
+                                              ),
+                                            ),
+                                          );
+
+                                          navigator.pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const HomeScreen(),
+                                            ),
+                                          );
+                                        } else {
+                                          messenger.showSnackBar(
+                                            SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content: Text(
+                                                vm.error ??
+                                                    "Something went wrong",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 40,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  backgroundColor: Colors.blueAccent,
+                                ),
+
+                                child: vm.isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text(
+                                        'Login',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
