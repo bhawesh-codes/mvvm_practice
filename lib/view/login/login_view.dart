@@ -73,64 +73,72 @@ class LoginScreen extends StatelessWidget {
                             const SizedBox(height: 30),
 
                             Center(
-                              child: ElevatedButton(
-                                onPressed: vm.isLoading
-                                    ? null
-                                    : () async {
-                                        final navigator = Navigator.of(context);
-                                        final messenger = ScaffoldMessenger.of(
-                                          context,
-                                        );
+                              child: SizedBox(
+                                height: 50,
+                                width: 180,
+                                child: ElevatedButton(
+                                  onPressed: vm.isLoading
+                                      ? null
+                                      : () async {
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
+                                          final messenger =
+                                              ScaffoldMessenger.of(context);
 
-                                        final success = await vm.login();
+                                          final success = await vm.login();
 
-                                        if (success) {
-                                          messenger.showSnackBar(
-                                            const SnackBar(
-                                              backgroundColor: Colors.green,
-                                              content: Text(
-                                                "Login successful!",
+                                          if (success) {
+                                            messenger.showSnackBar(
+                                              const SnackBar(
+                                                duration: Duration(
+                                                  milliseconds: 500,
+                                                ),
+                                                backgroundColor: Colors.green,
+                                                content: Text(
+                                                  "Login successful!",
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
 
-                                          navigator.pushReplacement(
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const HomeScreen(),
-                                            ),
-                                          );
-                                        } else {
-                                          messenger.showSnackBar(
-                                            SnackBar(
-                                              backgroundColor: Colors.red,
-                                              content: Text(
-                                                vm.error ??
-                                                    "Something went wrong",
+                                            navigator.pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const HomeScreen(),
                                               ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 40,
-                                    vertical: 12,
+                                            );
+                                          } else {
+                                            messenger.showSnackBar(
+                                              SnackBar(
+                                                backgroundColor: Colors.red,
+                                                content: Text(
+                                                  vm.error ??
+                                                      "Something went wrong",
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    backgroundColor: Colors.blueAccent,
                                   ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  backgroundColor: Colors.blueAccent,
+
+                                  child: vm.isLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : const Text(
+                                          'Login',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                 ),
-
-                                child: vm.isLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : const Text(
-                                        'Login',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
                               ),
                             ),
                           ],
