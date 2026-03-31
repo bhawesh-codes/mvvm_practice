@@ -25,7 +25,7 @@ class LoginViewModel extends ChangeNotifier {
         emailController.text,
         passwordController.text,
       );
-      await _storage.saveToken(token);
+      await _storage.saveToken(token!);
       return true;
     } catch (e) {
       error = e.toString();
