@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/services/secure_storage_service.dart';
-import 'package:mvvm_practice/view/home/home_view.dart';
-import 'package:mvvm_practice/view/login/login_view.dart';
 
-class SplashViewModel {
+class SplashViewModel extends ChangeNotifier {
+  SplashViewModel() {
+    checkAuth(); // ✅ start auth check immediately
+  }
+  
   final SecureStorageService _storage = SecureStorageService();
+  bool _hasChecked = false;
+  bool? isAuthenticated; // ✅ ViewModel only exposes state
 
-  Future<void> checkAuth(BuildContext context) async {
-    final navigator = Navigator.of(context);
+  Future<void> checkAuth() async {
+    
+    if (_hasChecked) return;
+    _hasChecked = true;
+
     final token = await _storage.getToken();
-    if (token != null) {
-      navigator.pushReplacement(
-        MaterialPageRoute(builder: (_) => HomeScreen()),
-      );
-    } else {
-      navigator.pushReplacement(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-      );
-    }
+    isAuthenticated = token != null; // ✅ just sets state
+    notifyListeners(); // ✅ tells View to react
   }
 }
