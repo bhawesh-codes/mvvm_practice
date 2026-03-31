@@ -8,36 +8,27 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Replaces initState
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final vm = context.read<HomeViewModel>();
-      if (!vm.hasFetched) {
-        // ✅ only fetch if not already fetched
-        vm.fetchBooks();
-      }
-    });
+    
 
-    final vm = context.watch<HomeViewModel>();
-
-    return Scaffold(
+    return ChangeNotifierProvider(create: (_) => HomeViewModel(),builder: (context, child) => Scaffold(
       appBar: MyAppbar(),
       body: Builder(
-        builder: (_) {
-          if (vm.isLoading) {
+        builder: (context) {
+          if (context.watch<HomeViewModel>().isLoading) {
             return const Center(
               child: CircularProgressIndicator(color: Colors.blueAccent),
             );
           }
 
-          if (vm.error != null) {
-            return Center(child: Text(vm.error!));
+          if (context.watch<HomeViewModel>().error != null) {
+            return Center(child: Text(context.watch<HomeViewModel>().error!));
           }
 
-          if (vm.bookData == null) {
+          if (context.watch<HomeViewModel>().bookData == null) {
             return const Center(child: Text("No data"));
           }
 
-          final books = vm.bookData!.results ?? [];
+          final books = context.watch<HomeViewModel>().bookData!.results ?? [];
 
           return Padding(
             padding: const EdgeInsets.all(12),
@@ -122,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (vm.apiService.page != 1)
+                    if (context.watch<HomeViewModel>().apiService.page != 1)
                       GestureDetector(
                         onTap: () =>
                             context.read<HomeViewModel>().previousPage(),
@@ -142,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(width: 16),
-                    if (vm.apiService.page != 5)
+                    if (context.watch<HomeViewModel>().apiService.page != 5)
                       GestureDetector(
                         onTap: () => context.read<HomeViewModel>().nextPage(),
                         child: const Row(
@@ -168,6 +159,7 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
+    )
     );
   }
 }
