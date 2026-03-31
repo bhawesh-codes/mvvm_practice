@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
       appBar: MyAppbar(),
       body: Builder(
         builder: (_) {
-          if (context.read<HomeViewModel>().isLoading) {
+          if (vm.isLoading) {
             return const Center(
               child: CircularProgressIndicator(color: Colors.blueAccent),
             );
