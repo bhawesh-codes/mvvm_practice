@@ -4,9 +4,10 @@ import 'package:mvvm_practice/repositories/favorites_repository.dart';
 import 'package:mvvm_practice/view/home/models/book_model.dart';
 
 class FavoriteViewModel extends ChangeNotifier {
+  final FavoritesRepository _favRepo;
+  FavoriteViewModel(this._favRepo);
   final ApiService _apiService = ApiService();
-  final FavoritesRepository _favRepo = FavoritesRepository(); // ✅ injected
-
+  
   List<Result> favoriteBooks = [];
   List<Result> allBooks = [];
   List<String> _slugs = [];
@@ -15,22 +16,29 @@ class FavoriteViewModel extends ChangeNotifier {
   String? error;
   bool hasLoaded = false;
 
+  // ✅ fix — only fetch allBooks once, reuse cache after
   Future<void> loadFavorites() async {
     if (isLoading) return;
     isLoading = true;
-    hasLoaded = true;
+    hasLoaded = false;
     error = null;
     notifyListeners();
 
     try {
       _slugs = await _favRepo.getSlugs();
-      allBooks = await _apiService
-          .fetchAllBooks(); // ✅ always fetch, no if/else
+
+      if (allBooks.isEmpty) {
+        // ✅ only fetch if not already cached
+        allBooks = await _apiService.fetchAllBooks();
+      }
+
       favoriteBooks = allBooks
           .where((book) => _slugs.contains(book.slug))
           .toList();
+      hasLoaded = true;
     } catch (e) {
       error = e.toString();
+      hasLoaded = false;
     }
 
     isLoading = false;
@@ -52,6 +60,7 @@ class FavoriteViewModel extends ChangeNotifier {
 
     notifyListeners(); // ✅ no need for updateFavorites()
   }
+
   bool isFavorite(Result book) {
     return _favRepo.isFavorite(book, _slugs); // ✅ repo handles check
   }
