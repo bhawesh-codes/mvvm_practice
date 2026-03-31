@@ -5,9 +5,11 @@ import 'package:mvvm_practice/repositories/favorites_repository.dart';
 import 'package:mvvm_practice/view/home/models/book_model.dart';
 
 class HomeViewModel extends ChangeNotifier {
+  final FavoritesRepository _favRepo;
+  HomeViewModel(this._favRepo);
   final ApiService _apiService = ApiService();
   final SecureStorageService _storage = SecureStorageService();
-  final FavoritesRepository _favRepo = FavoritesRepository(); // ✅ injected
+  
 
   ApiService get apiService => _apiService;
 
