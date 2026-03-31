@@ -8,16 +8,9 @@ class FavoriteView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fvm = context.watch<FavoriteViewModel>(); // ✅ always first line
-
-    // ✅ moved after watch
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!fvm.hasLoaded) {
-        context.read<FavoriteViewModel>().loadFavorites();
-      }
-    });
-
-    if (fvm.isLoading) {
+    return ChangeNotifierProvider(
+      create: (_) => FavoriteViewModel(),
+      builder: (context, child) { if (context.watch<FavoriteViewModel>().isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(color: Colors.blueAccent),
@@ -27,7 +20,7 @@ class FavoriteView extends StatelessWidget {
 
     return Scaffold(
       appBar: MyAppbar(),
-      body: fvm.favoriteBooks.isEmpty
+      body: context.watch<FavoriteViewModel>().favoriteBooks.isEmpty
           ? const Center(child: Text("No favorite books"))
           : Padding(
               padding: const EdgeInsets.all(12),
@@ -36,7 +29,7 @@ class FavoriteView extends StatelessWidget {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: fvm.favoriteBooks.length,
+                    itemCount: context.watch<FavoriteViewModel>().favoriteBooks.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -45,7 +38,7 @@ class FavoriteView extends StatelessWidget {
                           childAspectRatio: 0.6,
                         ),
                     itemBuilder: (context, index) {
-                      final book = fvm.favoriteBooks[index];
+                      final book = context.watch<FavoriteViewModel>().favoriteBooks[index];
 
                       return Card(
                         shape: RoundedRectangleBorder(
@@ -83,10 +76,10 @@ class FavoriteView extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: () async {
-                                    await fvm.toggleFavorite(book); // ✅ own VM
+                                    await context.read<FavoriteViewModel>().toggleFavorite(book); // ✅ own VM
                                   },
                                   icon:
-                                      fvm.isFavorite(book) // ✅ own VM
+                                      context.watch<FavoriteViewModel>().isFavorite(book) // ✅ own VM
                                       ? const Icon(
                                           Icons.favorite,
                                           color: Colors.red,
@@ -108,6 +101,10 @@ class FavoriteView extends StatelessWidget {
                 ],
               ),
             ),
+    );}
     );
+    
   }
 }
+
+    
