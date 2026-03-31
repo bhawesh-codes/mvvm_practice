@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/utils/const/my_appbar.dart';
-import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -93,11 +92,11 @@ class HomeScreen extends StatelessWidget {
                               ),
                               IconButton(
                                 onPressed: () {
-                                  context.read<FavoriteViewmodel>().toggleFavorite(
+                                  context.read<HomeViewModel>().toggleFavorite(
                                     book,
                                   );
                                 },
-                                icon: context.watch<FavoriteViewmodel>().isFavorite(book)
+                                icon: context.watch<HomeViewModel>().isFavorite(book)
                                     ? const Icon(
                                         Icons.favorite,
                                         color: Colors.red,
