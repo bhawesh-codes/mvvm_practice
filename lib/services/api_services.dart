@@ -18,7 +18,29 @@ class ApiService {
     }
   }
 
-  Future<String> login(String username, String password) async {
+  Future<List<Result>> fetchAllBooks() async {
+    List<Result> allBooks = [];
+    int currentPage = 1;
+    while (true) {
+      try {
+        final response = await _dio.get(
+          '/books/new-releases/',
+          queryParameters: {'page': currentPage},
+        );
+        final bookModel = BookModel.fromJson(response.data);
+        if (bookModel.results != null) {
+          allBooks.addAll(bookModel.results!);
+        }
+        if (bookModel.pagination?.next == null) break;
+        currentPage++;
+      } on DioException catch (e) {
+        throw Exception(e.response?.data ?? "Failed to fetch books");
+      }
+    }
+    return allBooks;
+  }
+
+  Future<String?> login(String username, String password) async {
     try {
       final response = await _dio.post(
         '/api/login/',
