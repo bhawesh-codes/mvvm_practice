@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/utils/const/my_appbar.dart';
 import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteView extends StatelessWidget {
-  const FavoriteView({
-    super.key,
-    required this.toggleFavorite,
-    required this.isFavorite,
-  });
-
-  final Future<void> Function(Result) toggleFavorite;
-  final bool Function(Result) isFavorite;
+  const FavoriteView({super.key}); 
 
   @override
   Widget build(BuildContext context) {
+    final fvm = context.watch<FavoriteViewModel>(); // ✅ always first line
+
+    // ✅ moved after watch
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final vm = context.read<FavoriteViewModel>();
-      if (!vm.hasLoaded) {
-        // ✅ only fetch if not already fetched
-        vm.loadFavorites();
+      if (!fvm.hasLoaded) {
+        context.read<FavoriteViewModel>().loadFavorites();
       }
     });
-    final fvm = context.watch<FavoriteViewModel>();
 
     if (fvm.isLoading) {
       return const Scaffold(
@@ -91,18 +83,10 @@ class FavoriteView extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: () async {
-                                    await toggleFavorite(
-                                      book,
-                                    ); // ✅ use passed function
-                                    if (context.mounted) {
-                                      // ✅ update list smoothly without loading
-                                      context
-                                          .read<FavoriteViewModel>()
-                                          .updateFavorites();
-                                    }
+                                    await fvm.toggleFavorite(book); // ✅ own VM
                                   },
                                   icon:
-                                      isFavorite(book) // ✅ use passed function
+                                      fvm.isFavorite(book) // ✅ own VM
                                       ? const Icon(
                                           Icons.favorite,
                                           color: Colors.red,
