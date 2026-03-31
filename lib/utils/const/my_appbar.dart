@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mvvm_practice/view/favorite/favorite_view.dart';
+import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:mvvm_practice/view/login/login_view.dart';
 import 'package:provider/provider.dart';
@@ -24,10 +25,13 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
+            context.read<FavoriteViewModel>().hasLoaded = false;
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => FavoriteView()),
-            );
+              MaterialPageRoute(builder: (_) => FavoriteView(toggleFavorite: context.read<HomeViewModel>().toggleFavorite, // ✅
+      isFavorite: context.read<HomeViewModel>().isFavorite,         // ✅
+    ),));
+            
           },
           icon: Icon(Icons.favorite, color: Colors.white),
         ),
