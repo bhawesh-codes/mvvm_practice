@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mvvm_practice/view/favorite/favorite_view.dart';
-import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
 import 'package:mvvm_practice/view/home/home_viewmodel.dart';
 import 'package:mvvm_practice/view/login/login_view.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +24,6 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () async {
-            // ✅ make it async
-            context.read<FavoriteViewModel>().hasLoaded = false;
-
             await Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const FavoriteView()),
