@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/services/api_services.dart';
+import 'package:mvvm_practice/repositories/favorites_repository.dart';
 import 'package:mvvm_practice/view/home/models/book_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoriteViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
-  static const String _favKey = 'favorite_slugs';
+  final FavoritesRepository _favRepo = FavoritesRepository(); // ✅ injected
 
   List<Result> favoriteBooks = [];
-  List<Result> allBooks = []; // Cache all books
+  List<Result> allBooks = [];
+  List<String> _slugs = [];
+
   bool isLoading = false;
   String? error;
   bool hasLoaded = false;
 
   Future<void> loadFavorites() async {
-    if (isLoading) return; // ✅ only guard is isLoading
+    if (isLoading) return;
     isLoading = true;
-    hasLoaded = true; // ✅ mark as loaded
+    hasLoaded = true;
     error = null;
     notifyListeners();
 
     try {
-      final pref = await SharedPreferences.getInstance();
-      final slugs = pref.getStringList(_favKey) ?? [];
-
-      if (slugs.isEmpty) {
-        favoriteBooks = [];
-      } else {
-        final allBooks = await _apiService.fetchAllBooks();
-        this.allBooks = allBooks; // Cache all books
-        favoriteBooks = allBooks
-            .where((book) => slugs.contains(book.slug)) // ✅ match by slug
-            .toList();
-      }
+      _slugs = await _favRepo.getSlugs();
+      allBooks = await _apiService
+          .fetchAllBooks(); // ✅ always fetch, no if/else
+      favoriteBooks = allBooks
+          .where((book) => _slugs.contains(book.slug))
+          .toList();
     } catch (e) {
       error = e.toString();
     }
@@ -41,11 +37,28 @@ class FavoriteViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateFavorites() async {
-    final pref = await SharedPreferences.getInstance();
-    final slugs = pref.getStringList(_favKey) ?? [];
+  Future<void> toggleFavorite(Result book) async {
+    await _favRepo.toggle(book);
+
+    if (_slugs.contains(book.slug)) {
+      _slugs.remove(book.slug);
+      favoriteBooks.removeWhere(
+        (b) => b.slug == book.slug,
+      ); // ✅ remove directly
+    } else {
+      _slugs.add(book.slug!);
+      favoriteBooks.add(book);
+    }
+
+    notifyListeners(); // ✅ no need for updateFavorites()
+  }
+  bool isFavorite(Result book) {
+    return _favRepo.isFavorite(book, _slugs); // ✅ repo handles check
+  }
+
+  void updateFavorites() {
     favoriteBooks = allBooks
-        .where((book) => slugs.contains(book.slug))
+        .where((book) => _slugs.contains(book.slug))
         .toList();
     notifyListeners();
   }
