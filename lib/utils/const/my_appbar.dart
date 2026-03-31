@@ -24,15 +24,22 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () {
+          onPressed: () async {
+            // ✅ make it async
             context.read<FavoriteViewModel>().hasLoaded = false;
-            Navigator.push(
+
+            await Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => FavoriteView(toggleFavorite: context.read<HomeViewModel>().toggleFavorite, // ✅
-      isFavorite: context.read<HomeViewModel>().isFavorite,         // ✅
-    ),));
-            
+              MaterialPageRoute(builder: (_) => const FavoriteView()),
+            ); // ✅ waits until user pops back
+
+            if (context.mounted) {
+              await context
+                  .read<HomeViewModel>()
+                  .refreshFavoriteSlugs(); // ✅ re-sync
+            }
           },
+
           icon: Icon(Icons.favorite, color: Colors.white),
         ),
         Padding(
