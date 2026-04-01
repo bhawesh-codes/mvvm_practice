@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/models/book_model.dart';
 
 class FavoritesRepository {
   static const String _favKey = 'favorite_slugs';
