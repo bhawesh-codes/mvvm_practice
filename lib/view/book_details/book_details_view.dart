@@ -14,7 +14,7 @@ class BookDetailsView extends StatelessWidget {
       create: (_) => BookDetailsViewmodel()..fetchBookDetails(slug),
       builder: (context, child) {
         return Scaffold(
-          appBar: MyAppbar(title: "Thuprai"),
+          appBar: MyAppbar(),
 
           body: Builder(
             builder: (context) {
