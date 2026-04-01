@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/services/api_services.dart';
 import 'package:mvvm_practice/repositories/favorites_repository.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/models/book_model.dart';
 
 class FavoriteViewModel extends ChangeNotifier {
 

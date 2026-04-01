@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm_practice/view/favorite/favorite_viewmodel.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/models/book_model.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteCard extends StatelessWidget {
