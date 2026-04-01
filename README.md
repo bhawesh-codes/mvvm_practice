@@ -1,6 +1,11 @@
 # mvvm_practice
 
-A new Flutter project.
+FLutter version: 3.41.5
+Android SDK version: 36.1.0
+Dart version: 3.11.3
+DevTools version 2.54.2
+
+
 
 ## Getting Started
 
