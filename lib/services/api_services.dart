@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:mvvm_practice/models/book_details_model.dart';
 import 'package:mvvm_practice/services/dio_client.dart';
-import 'package:mvvm_practice/view/home/models/book_model.dart';
+import 'package:mvvm_practice/models/book_model.dart';
 
 class ApiService {
   final Dio _dio = DioClient().dio; // ✅ use dio client with interceptor
@@ -49,6 +50,15 @@ class ApiService {
       return response.data['token'];
     } on DioException catch (e) {
       throw Exception(e.response?.data ?? "Check your credentials");
+    }
+  }
+
+  Future<BookDetailsModel> getBookDetails(String slug) async {
+    try {
+      final response = await _dio.get('/book/$slug/');
+      return BookDetailsModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Failed to fetch book details");
     }
   }
 }
