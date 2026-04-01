@@ -40,7 +40,7 @@ class ApiService {
     return allBooks;
   }
 
-  Future<String?> login(String username, String password) async {
+  Future<String?> requestLogin(String username, String password) async {
     try {
       final response = await _dio.post(
         '/api/login/',
