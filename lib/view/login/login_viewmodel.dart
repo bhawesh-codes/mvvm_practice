@@ -21,7 +21,7 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final token = await _apiService.login(
+      final token = await _apiService.requestLogin(
         emailController.text,
         passwordController.text,
       );

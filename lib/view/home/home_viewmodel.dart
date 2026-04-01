@@ -5,20 +5,18 @@ import 'package:mvvm_practice/repositories/favorites_repository.dart';
 import 'package:mvvm_practice/view/home/models/book_model.dart';
 
 class HomeViewModel extends ChangeNotifier {
-
   final ApiService _apiService = ApiService();
   final SecureStorageService _storage = SecureStorageService();
   final favRepo = FavoritesRepository();
   HomeViewModel() {
     fetchBooks();
   }
-  
 
   ApiService get apiService => _apiService;
 
   BookModel? bookData;
   bool isLoading = false;
-  
+
   String? error;
   bool hasLoadedSlugs = false;
   List<String> favoriteSlugs = [];
@@ -67,21 +65,21 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void nextPage() {
+  void navigateToNextPage() {
     if (_apiService.page < 6) {
       _apiService.page++;
       fetchBooks();
     }
   }
 
-  void previousPage() {
+  void navigateToPreviousPage() {
     if (_apiService.page > 1) {
       _apiService.page--;
       fetchBooks();
     }
   }
 
-  void logout() {
+  void requestLogout() {
     _storage.deleteToken();
     bookData = null;
     _apiService.page = 1;
